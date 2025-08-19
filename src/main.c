@@ -2,19 +2,20 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define row 200
+#define col 200
+#define dir 4
+
 
 int main() {
-    int noiseMap[100][100];
+    int noiseMap[row][col];
     srand(time(NULL));
 
-    for(int i = 0; i<100; i++) {
-        for(int j = 0; j<100; j++) {
+    for(int i = 0; i<row; i++) {
+        for(int j = 0; j<col; j++) {
 
-            if(rand() % 100 < 5) {
-                noiseMap[i][j] = 3;
-            }
-            else if(rand() % 100 < 10) {
-                noiseMap[i][j] = 2;
+            if(rand() % 100 < 1) {
+                noiseMap[i][j] = (rand() % 20) + 1;
             }
             else {
                 noiseMap[i][j] = 0;
@@ -22,62 +23,75 @@ int main() {
         }
     }
 
-
-
-
     //noiseMap[3][5] = 3;
-/*
-    int directions[8][2] = {
+
+    /*int directions[dir][2] = {
         {-1,-1},{-1,0},{-1,1},
         {0,-1},{0,1},
         {1,-1},{1,0},{1,1}
-    };
-    */
-    int directions[4][2] = {
+    };*/
+    
+    int directions[dir][2] = {
         {-1,0},
         {0,-1},{0,1},
         {1,0}
     };
 
+    int iterations = 100;
 
-    for(int i = 0; i<100; i++) {
-        for(int j = 0; j<100; j++) {
-            if(noiseMap[i][j] == 3) {
-                for(int d = 0; d<4; d++) {
-                    int Oi = i + directions[d][0];
-                    int Oj = j + directions[d][1];
-                    if(Oi >= 0 && Oi < 100 && Oj >= 0 && Oj <100) {
-                        if(noiseMap[Oi][Oj] < 2) {
-                            noiseMap[Oi][Oj] = 2;
+    while(iterations > 0) {
+        for(int i = 0; i<row; i++) {
+            for(int j = 0; j<col; j++) {
+                if(noiseMap[i][j] > 0) {
+                    for(int d = 0; d<dir; d++) {
+                        int Oi = i + directions[d][0];
+                        int Oj = j + directions[d][1];
+                        if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
+                            if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
+                                if(rand() %100 < 1){
+                                    noiseMap[Oi][Oj] = noiseMap[i][j];
+                                }
+                                else {
+                                noiseMap[Oi][Oj] = noiseMap[i][j] - 1;
+                                }   
+                            }  
                         }
                     }
-        }
+                }
             }
         }
+        iterations--;
     }
-    for(int i = 0; i<100; i++) {
-        for(int j = 0; j<100; j++) {
-            if(noiseMap[i][j] == 2) {
-                for(int d = 0; d<4; d++) {
-                    int Oi = i + directions[d][0];
-                    int Oj = j + directions[d][1];
-                    if(Oi >= 0 && Oi < 100 && Oj >= 0 && Oj <100) {
-                        if(noiseMap[Oi][Oj] < 1) {
-                            noiseMap[Oi][Oj] = 1;
-                        }
-                    }
-        }
-            }
-        }
-    }
-    
 
-    for(int i = 0; i<100; i++) {
-        for(int j = 0; j<100; j++){
+    // write to file
+
+    FILE *f = fopen("noiseMap.ppm", "w");
+    if (!f) {
+        perror("file failed");
+        return 1;
+    }
+
+    fprintf(f, "P3\n%d %d\n255\n", col, row);
+
+    for(int i = 0; i<row; i++) {
+        for(int j = 0; j<col; j++) {
+            int color = noiseMap[i][j] * 12;
+            fprintf(f, "%d %d %d ", color, color, color);
+        }
+        fprintf(f, "\n");
+    }
+
+    fclose(f);
+    printf("file wrote to noiseMap.ppm\n");
+
+    /* print to console
+    for(int i = 0; i<row; i++) {
+        for(int j = 0; j<col; j++){
             printf("%i", noiseMap[i][j]);
         }
         printf("\n");
     }
+    */
 
     return 0;
 }
