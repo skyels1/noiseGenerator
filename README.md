@@ -1,9 +1,9 @@
 # random noise generation
 a simple C prject to generate basic noise
 
-## image of the current image saved
+## example output
 
-![(image) example of what the code looks like](/noiseMap.ppm)
+![(image) example of what the code looks like](/previews/noiseMap.png)
 
 ## installation and guide
 `git clone https://github.com/skyels1/noiseGenerator.git`\
