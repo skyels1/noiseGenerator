@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define row 500
-#define col 500
+#define row 200
+#define col 200
 #define dir 8
 
 
@@ -14,7 +14,7 @@ int main() {
     for(int i = 0; i<row; i++) {
         for(int j = 0; j<col; j++) {
 
-            if(rand() % 4000 < 1) {
+            if(rand() % 100 < 1) {
                 noiseMap[i][j] = (rand() % 20) + 1;
             }
             else {
@@ -46,7 +46,7 @@ int main() {
                         int Oj = j + directions[d][1];
                         if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
                             if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
-                                if(rand() %10 < 1){
+                                if(rand() %100 < 1){
                                     noiseMap[Oi][Oj] = noiseMap[i][j];
                                 }
                                 else {
@@ -73,42 +73,58 @@ int main() {
 
     for(int i = 0; i<row; i++) {
         for(int j = 0; j<col; j++) {
-            //int color = noiseMap[i][j] * 12;
-
-            if(noiseMap[i][j] < 1) {
-                fprintf(f, "%d %d %d ", 5, 5, 25);// darker blue
-            }
-            else if(noiseMap[i][j] < 3) {
-                fprintf(f, "%d %d %d ", 10, 21, 80);// dark blue
-            }
-            else if(noiseMap[i][j] >= 3 && noiseMap[i][j] < 5) {
-                fprintf(f, "%d %d %d ", 12, 34, 148);// light blue
-            }
-            else if(noiseMap[i][j] >= 5 && noiseMap[i][j] < 7) {
-                fprintf(f, "%d %d %d ", 90, 240, 250);// lighter blue
-            }
-            else if(noiseMap[i][j] >= 7 && noiseMap[i][j] < 10) {
-                fprintf(f, "%d %d %d ", 55, 199, 74);// light green
-            }
-            else if(noiseMap[i][j] >= 10 && noiseMap[i][j] < 13) {
-                
-                fprintf(f, "%d %d %d ", 18, 148, 35);// dark green
-            }
-            else if(noiseMap[i][j] >= 13 && noiseMap[i][j] < 15) {
-                
-                fprintf(f, "%d %d %d ", 208, 163, 105);// light brown
-            }
-            else {
-                fprintf(f, "%d %d %d ", 79, 80, 85);// gray
-            }
-
-            //fprintf(f, "%d %d %d ", color, color, color);
+            int color = noiseMap[i][j] * 12;
+            fprintf(f, "%d %d %d ", color, color, color);
         }
         fprintf(f, "\n");
     }
 
     fclose(f);
     printf("file wrote to noiseMap.ppm\n");
+
+    /*FILE *f2 = fopen("noiseMapColor.ppm", "w");
+    if (!f2) {
+        perror("failed to write file");
+        return 1;
+    }
+
+    fprintf(f2, "P3\n%d %d\n255\n", col, row);
+
+    for(int i = 0; i<row; i++) {
+        for(int j = 0; j<col; j++) {
+
+            if(noiseMap[i][j] < 1) {
+                fprintf(f2, "%d %d %d ", 5, 5, 25);// darker blue
+            }
+            else if(noiseMap[i][j] < 3) {
+                fprintf(f2, "%d %d %d ", 10, 21, 80);// dark blue
+            }
+            else if(noiseMap[i][j] >= 3 && noiseMap[i][j] < 5) {
+                fprintf(f2, "%d %d %d ", 12, 34, 148);// light blue
+            }
+            else if(noiseMap[i][j] >= 5 && noiseMap[i][j] < 7) {
+                fprintf(f2, "%d %d %d ", 90, 240, 250);// lighter blue
+            }
+            else if(noiseMap[i][j] >= 7 && noiseMap[i][j] < 10) {
+                fprintf(f2, "%d %d %d ", 55, 199, 74);// light green
+            }
+            else if(noiseMap[i][j] >= 10 && noiseMap[i][j] < 13) {
+                
+                fprintf(f2, "%d %d %d ", 18, 148, 35);// dark green
+            }
+            else if(noiseMap[i][j] >= 13 && noiseMap[i][j] < 15) {
+                
+                fprintf(f2, "%d %d %d ", 208, 163, 105);// light brown
+            }
+            else {
+                fprintf(f2, "%d %d %d ", 79, 80, 85);// gray
+            }
+        }
+        fprintf(f2, "\n");
+    }
+
+    fclose(f2);
+    printf("file wrote to noiseMapColor.ppm\n");*/
 
     /* print to console
     for(int i = 0; i<row; i++) {
