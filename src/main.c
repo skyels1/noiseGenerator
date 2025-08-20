@@ -67,7 +67,7 @@ int main() {
 
     FILE *f = fopen("noiseMap.ppm", "w");
     if (!f) {
-        perror("file failed");
+        perror("failed to write file");
         return 1;
     }
 
