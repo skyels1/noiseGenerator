@@ -3,11 +3,11 @@ a simple C prject to generate basic noise
 
 ## example output
 
-lower detail image\
+grey scale noise\
 ![(image) example of what the code looks like](/previews/noiseMap.png)
 
-high detail image\
-![(image) example of what the code looks like](/previews/noiseMapHighDetail.png)
+height map noise\
+![(image) example of what the code looks like](/previews/noiseMapWithColor3.png)
 
 ## installation and guide
 `git clone https://github.com/skyels1/noiseGenerator.git`\
