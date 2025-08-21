@@ -134,6 +134,7 @@ int main() {
         printf("\n");
     }
     */
+    system("xdg-open noiseMap.ppm");
 
     return 0;
 }
