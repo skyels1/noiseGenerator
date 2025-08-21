@@ -35,7 +35,7 @@ int main() {
         {1,0}
     };*/
 
-    int iterations = 50;
+    int iterations = 30;
 
     while(iterations > 0) {
         for(int i = 0; i<row; i++) {
@@ -135,6 +135,7 @@ int main() {
     }
     */
     system("xdg-open noiseMap.ppm");
+    system("start noiseMapColor.ppm");
 
     return 0;
 }
