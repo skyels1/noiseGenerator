@@ -35,11 +35,31 @@ int main() {
         {1,0}
     };*/
 
-    int iterations = 30;
+    int iterations = 10;
 
     while(iterations > 0) {
         for(int i = 0; i<row; i++) {
             for(int j = 0; j<col; j++) {
+                if(noiseMap[i][j] > 0) {
+                    for(int d = 0; d<dir; d++) {
+                        int Oi = i + directions[d][0];
+                        int Oj = j + directions[d][1];
+                        if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
+                            if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
+                                if(rand() %100 < 1){
+                                    noiseMap[Oi][Oj] = noiseMap[i][j];
+                                }
+                                else {
+                                noiseMap[Oi][Oj] = noiseMap[i][j] - 1;
+                                }   
+                            }  
+                        }
+                    }
+                }
+            }
+        }
+        for(int j = 0; j<row; j++) {
+            for(int i = 0; i<col; i++) {
                 if(noiseMap[i][j] > 0) {
                     for(int d = 0; d<dir; d++) {
                         int Oi = i + directions[d][0];
