@@ -2,20 +2,23 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define row 200
-#define col 200
+#define row 400
+#define col 400
 #define dir 8
 
 
 int main() {
     int noiseMap[row][col];
     srand(time(NULL));
+    int spawnSize = 40;
+    int greyScale = 255/spawnSize;
+    int iterations = 5;
 
     for(int i = 0; i<row; i++) {
         for(int j = 0; j<col; j++) {
 
-            if(rand() % 100 < 1) {
-                noiseMap[i][j] = (rand() % 20) + 1;
+            if(rand() % 1000 < 1) {
+                noiseMap[i][j] = (rand() % spawnSize) + 1;
             }
             else {
                 noiseMap[i][j] = 0;
@@ -35,7 +38,7 @@ int main() {
         {1,0}
     };*/
 
-    int iterations = 10;
+    
 
     while(iterations > 0) {
         for(int i = 0; i<row; i++) {
@@ -46,7 +49,7 @@ int main() {
                         int Oj = j + directions[d][1];
                         if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
                             if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
-                                if(rand() %100 < 1){
+                                if(rand() %100 < 3){
                                     noiseMap[Oi][Oj] = noiseMap[i][j];
                                 }
                                 else {
@@ -58,15 +61,15 @@ int main() {
                 }
             }
         }
-        for(int j = 0; j<row; j++) {
-            for(int i = 0; i<col; i++) {
+        for(int i = row-1; i>0; i--) {
+            for(int j = col-1; j>0; j--) {
                 if(noiseMap[i][j] > 0) {
                     for(int d = 0; d<dir; d++) {
                         int Oi = i + directions[d][0];
                         int Oj = j + directions[d][1];
                         if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
                             if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
-                                if(rand() %100 < 1){
+                                if(rand() %100 < 3){
                                     noiseMap[Oi][Oj] = noiseMap[i][j];
                                 }
                                 else {
@@ -93,7 +96,7 @@ int main() {
 
     for(int i = 0; i<row; i++) {
         for(int j = 0; j<col; j++) {
-            int color = noiseMap[i][j] * 12;
+            int color = noiseMap[i][j] * greyScale;
             fprintf(f, "%d %d %d ", color, color, color);
         }
         fprintf(f, "\n");
