@@ -9,6 +9,9 @@ grey scale noise\
 height map noise\
 ![(image) example of what the code looks like](/previews/noiseMapWithColor4.png)
 
+both noise and terrain gif\
+![(image) example of what the code looks like](/previews/noise.gif)
+
 ## installation and guide
 `git clone https://github.com/skyels1/noiseGenerator.git`\
 `cd noiseGenerator`
