@@ -50,7 +50,7 @@ int main() {
                         int Oj = j + directions[d][1];
                         if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
                             if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
-                                if(rand() %100 < 8){
+                                if(rand() %100 < 10){
                                     noiseMap[Oi][Oj] = noiseMap[i][j];
                                 }
                                 else {
@@ -70,7 +70,7 @@ int main() {
                         int Oj = j + directions[d][1];
                         if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
                             if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
-                                if(rand() %100 < 8){
+                                if(rand() %100 < 10){
                                     noiseMap[Oi][Oj] = noiseMap[i][j];
                                 }
                                 else {
