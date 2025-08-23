@@ -46,8 +46,10 @@ int main() {
             for(int j = 0; j<col; j++) {
                 if(noiseMap[i][j] > 0) {
                     for(int d = 0; d<dir; d++) {
-                        int Oi = i + directions[d][0];
-                        int Oj = j + directions[d][1];
+                        int Oi = (i + directions[d][0] + row) % row;// for tile
+                        int Oj = (j + directions[d][1] + col) % col;
+                        //int Oi = i + directions[d][0];// for non tile
+                        //int Oj = j + directions[d][1];
                         if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
                             if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
                                 if(rand() %100 < 10){
@@ -62,12 +64,14 @@ int main() {
                 }
             }
         }
-        for(int i = row-1; i>0; i--) {
-            for(int j = col-1; j>0; j--) {
+        for(int i = row-1; i>=0; i--) {
+            for(int j = col-1; j>=0; j--) {
                 if(noiseMap[i][j] > 0) {
                     for(int d = 0; d<dir; d++) {
-                        int Oi = i + directions[d][0];
-                        int Oj = j + directions[d][1];
+                        int Oi = (i + directions[d][0] + row) % row;// for tile
+                        int Oj = (j + directions[d][1] + col) % col;
+                        //int Oi = i + directions[d][0];// for non tile
+                        //int Oj = j + directions[d][1];
                         if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
                             if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
                                 if(rand() %100 < 10){
