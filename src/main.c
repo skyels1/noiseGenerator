@@ -13,12 +13,12 @@ int main() {
 
     int spawnSize = 20;
     int greyScale = 255/spawnSize;
-    int iterations = 5;
+    int iterations = 30;
 
     for(int i = 0; i<row; i++) {
         for(int j = 0; j<col; j++) {
 
-            if(rand() % 1000 < 1) {
+            if(rand() % 5000 < 1) {
                 noiseMap[i][j] = (rand() % spawnSize) + 1;
             }
             else {
@@ -46,10 +46,10 @@ int main() {
             for(int j = 0; j<col; j++) {
                 if(noiseMap[i][j] > 0) {
                     for(int d = 0; d<dir; d++) {
-                        int Oi = (i + directions[d][0] + row) % row;// for tile
-                        int Oj = (j + directions[d][1] + col) % col;
-                        //int Oi = i + directions[d][0];// for non tile
-                        //int Oj = j + directions[d][1];
+                        //int Oi = (i + directions[d][0] + row) % row;// for tile
+                        //int Oj = (j + directions[d][1] + col) % col;
+                        int Oi = i + directions[d][0];// for non tile
+                        int Oj = j + directions[d][1];
                         if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
                             if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
                                 if(rand() %100 < 10){
@@ -68,12 +68,12 @@ int main() {
             for(int j = col-1; j>=0; j--) {
                 if(noiseMap[i][j] > 0) {
                     for(int d = 0; d<dir; d++) {
-                        int Oi = (i + directions[d][0] + row) % row;// for tile
-                        int Oj = (j + directions[d][1] + col) % col;
-                        //int Oi = i + directions[d][0];// for non tile
-                        //int Oj = j + directions[d][1];
+                        //int Oi = (i + directions[d][0] + row) % row;// for tile
+                        //int Oj = (j + directions[d][1] + col) % col;
+                        int Oi = i + directions[d][0];// for non tile
+                        int Oj = j + directions[d][1];
                         if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
-                            if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
+                            if(noiseMap[Oi][Oj] == 0) {
                                 if(rand() %100 < 10){
                                     noiseMap[Oi][Oj] = noiseMap[i][j];
                                 }
@@ -86,8 +86,30 @@ int main() {
                 }
             }
         }
+        if(iterations > 29) {
+            for(int i = 0; i<row; i++) {
+                for(int j = 0; j<col; j++) {
+                    if(noiseMap[i][j] > 0) {
+                        for(int d = 0; d<dir; d++) {
+                            //int Oi = (i + directions[d][0] + row) % row;// for tile
+                            //int Oj = (j + directions[d][1] + col) % col;
+                            int Oi = i + directions[d][0];// for non tile
+                            int Oj = j + directions[d][1];
+                            if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
+                                if(noiseMap[Oi][Oj] == 0) {
+                                    if(rand() % 10 < 1) {
+                                        noiseMap[Oi][Oj] = (rand() % (spawnSize/2)) + 1;
+                                    }
+                                }  
+                            }
+                        }
+                    }
+                }
+            }
+        }
         iterations--;
     }
+    
 
     // write to file
 
