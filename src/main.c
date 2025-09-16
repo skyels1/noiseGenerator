@@ -91,7 +91,7 @@ int main() {
                 for(int j = 0; j<col; j++) {
                     if(noiseMap[i][j] == 0) {
                         if(rand() % 1000 < 1) {
-                            noiseMap[i][j] = (rand() % (spawnSize/2)) + 1;
+                            noiseMap[i][j] = (rand() % (spawnSize)) + 1;
                             }
                         }
                     }
