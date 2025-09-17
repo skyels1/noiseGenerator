@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define row 200
-#define col 200
+#define row 400
+#define col 400
 #define dir 8
 
 
@@ -18,7 +18,7 @@ int main() {
     for(int i = 0; i<row; i++) {
         for(int j = 0; j<col; j++) {
 
-            if(rand() % 5000 < 1) {
+            if(rand() % 25000 < 1) {
                 noiseMap[i][j] = (rand() % spawnSize) + 1;
             }
             else {
@@ -52,12 +52,22 @@ int main() {
                         int Oj = j + directions[d][1];
                         if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
                             if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
-                                if(rand() %100 < 10){
+                                if(rand() %250 < 10){
                                     noiseMap[Oi][Oj] = noiseMap[i][j];
                                 }
                                 else {
                                 noiseMap[Oi][Oj] = noiseMap[i][j] - 1;
                                 }   
+                            }
+                            if(noiseMap[i][j] > 10) {
+                                if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
+                                    if(rand() %500 < 10){
+                                        noiseMap[Oi][Oj] = noiseMap[i][j];
+                                    }
+                                    else {
+                                    noiseMap[Oi][Oj] = noiseMap[i][j] - 1;
+                                    }   
+                                }  
                             }  
                         }
                     }
@@ -80,7 +90,17 @@ int main() {
                                 else {
                                 noiseMap[Oi][Oj] = noiseMap[i][j] - 1;
                                 }   
-                            }  
+                            }
+                            if(noiseMap[i][j] > 10) {
+                                if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
+                                    if(rand() %500 < 10){
+                                        noiseMap[Oi][Oj] = noiseMap[i][j];
+                                    }
+                                    else {
+                                    noiseMap[Oi][Oj] = noiseMap[i][j] - 1;
+                                    }   
+                                }  
+                            }    
                         }
                     }
                 }
@@ -89,8 +109,8 @@ int main() {
         if(iterations > 29) {
             for(int i = 0; i<row; i++) {
                 for(int j = 0; j<col; j++) {
-                    if(noiseMap[i][j] == 0) {
-                        if(rand() % 1000 < 1) {
+                    if(noiseMap[i][j] == 0 || noiseMap[i][j] == 1 || noiseMap[i][j] == 2 || noiseMap[i][j] == 3) {
+                        if(rand() % 750 < 1) {
                             noiseMap[i][j] = (rand() % (spawnSize)) + 1;
                             }
                         }
