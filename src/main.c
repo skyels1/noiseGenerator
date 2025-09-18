@@ -122,7 +122,7 @@ int main() {
         }
         // this is to try and get rid of the huge oceans or blank space that appears 
         // it just loops through the array and if its low enough number give it a chance to be bigger
-        if(iterations > 29) {
+        if(iterations > 28) {
             for(int i = 0; i<row; i++) {
                 for(int j = 0; j<col; j++) {
                     if(noiseMap[i][j] == 0) {
@@ -145,7 +145,10 @@ int main() {
                             noiseMap[i][j] = (rand() % 20) + 1;
                             }
                         }
-
+                        // extra step for when map has a 0
+                        // since i like the look of very shallow parts of the water
+                        // this allows more large mountains in 0 and shallow
+                        // both with their own chances
                     if(noiseMap[i][j] == 0) {
                         if(rand() % 5000 < 1) {
                             noiseMap[i][j] = (rand() % 20) + 1;
@@ -205,18 +208,15 @@ int main() {
                 fprintf(f2, "%d %d %d ", 90, 240, 250);// lighter blue
             }
             else if(noiseMap[i][j] >= spawnSize * 0.35 && noiseMap[i][j] < spawnSize * 0.5) {
-                fprintf(f2, "%d %d %d ", 55, 199, 74);// light green
-            }
-            else if(noiseMap[i][j] >= spawnSize * 0.5 && noiseMap[i][j] < spawnSize * 0.65) {
-                
-                fprintf(f2, "%d %d %d ", 18, 148, 35);// dark green
-            }
-            else if(noiseMap[i][j] >= spawnSize * 0.65 && noiseMap[i][j] < spawnSize * 0.8) {
-                
                 fprintf(f2, "%d %d %d ", 208, 163, 105);// light brown
             }
-            else if(noiseMap[i][j] >= spawnSize * 0.8 && noiseMap[i][j] < spawnSize) {
-                
+            else if(noiseMap[i][j] >= spawnSize * 0.5 && noiseMap[i][j] < spawnSize * 0.6) {
+                fprintf(f2, "%d %d %d ", 55, 199, 74);// light green
+            }
+            else if(noiseMap[i][j] >= spawnSize * 0.6 && noiseMap[i][j] < spawnSize * 0.75) {
+                fprintf(f2, "%d %d %d ", 18, 148, 35);// dark green
+            }
+            else if(noiseMap[i][j] >= spawnSize * 0.75 && noiseMap[i][j] < spawnSize * 0.95) {
                 fprintf(f2, "%d %d %d ", 79, 80, 85);// gray
             }
             else {
