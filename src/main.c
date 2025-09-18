@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdint.h>
 
-// favorite seed
+ /*favorite seed
 #define row 400
 #define col 400
 #define dir 8
@@ -11,11 +12,24 @@
 #define spreadChance 20
 #define spreadChanceGrow 1000
 #define elevationSpread 20
-// iterations set to 30 and 27
+// iterations set to 30 and 27 */
+
+// /*with higher quality
+#define row 1080
+#define col 1920
+#define dir 8
+#define spawnSize 20
+#define spawnChance RAND_MAX
+#define spreadChance 30
+#define spreadSetBack 1
+#define spreadChanceGrow 2500
+#define elevationSpread 20
+// iterations set to 30 and 27 */
 
 
 int main() {
-    int noiseMap[row][col];
+    static uint8_t noiseMap[row][col];
+
     srand(time(NULL));
 
     int iterations = 30;
@@ -34,7 +48,6 @@ int main() {
             }
         }
     }
-
     // box style all sides and corners
     int directions[dir][2] = {
         {-1,-1},{-1,0},{-1,1},
@@ -56,39 +69,42 @@ int main() {
             for(int j = 0; j<col; j++) {
                 if(noiseMap[i][j] > 0) {
                     for(int d = 0; d<dir; d++) {
-                        // map tiling, can have the map go from the sides and match the other side
-                        // kind of cool but i prefer normal for now
-                        //int Oi = (i + directions[d][0] + row) % row;// for tile
-                        //int Oj = (j + directions[d][1] + col) % col;
-                        int Oi = i + directions[d][0];// for non tile
-                        int Oj = j + directions[d][1];
-                        if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
-                            if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
-                                if(rand() %spreadChance < 1){
-                                    noiseMap[Oi][Oj] = noiseMap[i][j];
-                                }
-                                // to add a chance to grow the seed positive rather than negative without going over the cap
-                                else if(rand() %spreadChanceGrow < 1 && noiseMap[i][j] <(spawnSize-1)){
-                                    noiseMap[Oi][Oj] = noiseMap[i][j] + 1;
-                                }
-                                else {
-                                noiseMap[Oi][Oj] = noiseMap[i][j] - 1;
-                                }   
-                            }
-                            // added to change if you want to make it 
-                            // so that the mountains are not as circular
-                            // will force them to be more smooth
-                            // both this and for reverse update
-                            if(noiseMap[i][j] > 10) {
+                        // change the likely hood of the seed spreading to get less "islands"
+                        if(rand() %spreadSetBack == 0) {
+                            // map tiling, can have the map go from the sides and match the other side
+                            // kind of cool but i prefer normal for now
+                            //int Oi = (i + directions[d][0] + row) % row;// for tile
+                            //int Oj = (j + directions[d][1] + col) % col;
+                            int Oi = i + directions[d][0];// for non tile
+                            int Oj = j + directions[d][1];
+                            if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
                                 if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
-                                    if(rand() %elevationSpread < 1){
+                                    if(rand() %spreadChance < 1){
                                         noiseMap[Oi][Oj] = noiseMap[i][j];
+                                    }
+                                    // to add a chance to grow the seed positive rather than negative without going over the cap
+                                    else if(rand() %spreadChanceGrow < 1 && noiseMap[i][j] <(spawnSize-1)){
+                                        noiseMap[Oi][Oj] = noiseMap[i][j] + 1;
                                     }
                                     else {
                                     noiseMap[Oi][Oj] = noiseMap[i][j] - 1;
-                                    }   
-                                }  
-                            }  
+                                    } 
+                                }
+                                // added to change if you want to make it 
+                                // so that the mountains are not as circular
+                                // will force them to be more smooth
+                                // both this and for reverse update
+                                if(noiseMap[i][j] > (spawnSize*0.5) && noiseMap[i][j] <= (spawnSize*0.85)) {
+                                    if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
+                                        if(rand() %elevationSpread < 1){
+                                            noiseMap[Oi][Oj] = noiseMap[i][j];
+                                        }
+                                        else {
+                                        noiseMap[Oi][Oj] = noiseMap[i][j] - 1;
+                                        }   
+                                    }  
+                                } 
+                            }
                         }
                     }
                 }
@@ -101,35 +117,38 @@ int main() {
             for(int j = col-1; j>=0; j--) {
                 if(noiseMap[i][j] > 0) {
                     for(int d = 0; d<dir; d++) {
-                        // this is for tiling of the map both this and main
-                        //int Oi = (i + directions[d][0] + row) % row;// for tile
-                        //int Oj = (j + directions[d][1] + col) % col;
-                        int Oi = i + directions[d][0];// for non tile
-                        int Oj = j + directions[d][1];
-                        if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
-                            if(noiseMap[Oi][Oj] == 0) {
-                                if(rand() %spreadChance < 1){
-                                    noiseMap[Oi][Oj] = noiseMap[i][j];
-                                }
-                                // to add a chance to grow the seed positive rather than negative
-                                else if(rand() %spreadChanceGrow < 1 && noiseMap[i][j] <(spawnSize-1)){
-                                    noiseMap[Oi][Oj] = noiseMap[i][j] + 1;
-                                }
-                                else {
-                                noiseMap[Oi][Oj] = noiseMap[i][j] - 1;
-                                }   
-                            }
-                            // check if its higher and give it more chance to spread
-                            if(noiseMap[i][j] > 10) {
+                        // less islands spawn from this check to lower the amount of spreading
+                        if(rand() %spreadSetBack < 1) {
+                            // this is for tiling of the map both this and main
+                            //int Oi = (i + directions[d][0] + row) % row;// for tile
+                            //int Oj = (j + directions[d][1] + col) % col;
+                            int Oi = i + directions[d][0];// for non tile
+                            int Oj = j + directions[d][1];
+                            if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
                                 if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
-                                    if(rand() %elevationSpread < 1){
+                                    if(rand() %spreadChance < 1){
                                         noiseMap[Oi][Oj] = noiseMap[i][j];
+                                    }
+                                    // to add a chance to grow the seed positive rather than negative
+                                    else if(rand() %spreadChanceGrow < 1 && noiseMap[i][j] <(spawnSize-1)){
+                                        noiseMap[Oi][Oj] = noiseMap[i][j] + 1;
                                     }
                                     else {
                                     noiseMap[Oi][Oj] = noiseMap[i][j] - 1;
-                                    }   
-                                }  
-                            }    
+                                    }
+                                }
+                                // check if its higher and give it more chance to spread
+                                if(noiseMap[i][j] > (spawnSize*0.5) && noiseMap[i][j] <= (spawnSize*0.85)) {
+                                    if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
+                                        if(rand() %elevationSpread < 1){
+                                            noiseMap[Oi][Oj] = noiseMap[i][j];
+                                        }
+                                        else {
+                                        noiseMap[Oi][Oj] = noiseMap[i][j] - 1;
+                                        }   
+                                    }  
+                                }   
+                            }
                         }
                     }
                 }
