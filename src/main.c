@@ -2,24 +2,31 @@
 #include <stdlib.h>
 #include <time.h>
 
+// favorite seed
 #define row 400
 #define col 400
 #define dir 8
+#define spawnSize 20
+#define spawnChance 20000
+#define spreadChance 20
+#define spreadChanceGrow 1000
+#define elevationSpread 20
+// iterations set to 30 and 27
 
 
 int main() {
     int noiseMap[row][col];
     srand(time(NULL));
 
-    int spawnSize = 20;
-    int greyScale = 255/spawnSize;
     int iterations = 30;
+    int iterationLoop = 27;
+    int greyScale = 255/spawnSize;
 
     // populate the array with starters, and later loop to grow them
     for(int i = 0; i<row; i++) {
         for(int j = 0; j<col; j++) {
 
-            if(rand() % 5000 < 1) {
+            if(rand() % spawnChance < 1) {
                 noiseMap[i][j] = (rand() % spawnSize) + 1;
             }
             else {
@@ -41,7 +48,6 @@ int main() {
         {0,-1},{0,1},
         {1,0}
     };*/
-
     
 // this is the main update for the map generation, it will loop through the array
 // this is main because it goes top to bottom
@@ -58,8 +64,12 @@ int main() {
                         int Oj = j + directions[d][1];
                         if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
                             if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
-                                if(rand() %200 < 10){
+                                if(rand() %spreadChance < 1){
                                     noiseMap[Oi][Oj] = noiseMap[i][j];
+                                }
+                                // to add a chance to grow the seed positive rather than negative without going over the cap
+                                else if(rand() %spreadChanceGrow < 1 && noiseMap[i][j] <(spawnSize-1)){
+                                    noiseMap[Oi][Oj] = noiseMap[i][j] + 1;
                                 }
                                 else {
                                 noiseMap[Oi][Oj] = noiseMap[i][j] - 1;
@@ -71,7 +81,7 @@ int main() {
                             // both this and for reverse update
                             if(noiseMap[i][j] > 10) {
                                 if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
-                                    if(rand() %300 < 10){
+                                    if(rand() %elevationSpread < 1){
                                         noiseMap[Oi][Oj] = noiseMap[i][j];
                                     }
                                     else {
@@ -98,16 +108,21 @@ int main() {
                         int Oj = j + directions[d][1];
                         if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
                             if(noiseMap[Oi][Oj] == 0) {
-                                if(rand() %200 < 10){
+                                if(rand() %spreadChance < 1){
                                     noiseMap[Oi][Oj] = noiseMap[i][j];
+                                }
+                                // to add a chance to grow the seed positive rather than negative
+                                else if(rand() %spreadChanceGrow < 1 && noiseMap[i][j] <(spawnSize-1)){
+                                    noiseMap[Oi][Oj] = noiseMap[i][j] + 1;
                                 }
                                 else {
                                 noiseMap[Oi][Oj] = noiseMap[i][j] - 1;
                                 }   
                             }
+                            // check if its higher and give it more chance to spread
                             if(noiseMap[i][j] > 10) {
                                 if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
-                                    if(rand() %300 < 10){
+                                    if(rand() %elevationSpread < 1){
                                         noiseMap[Oi][Oj] = noiseMap[i][j];
                                     }
                                     else {
@@ -122,11 +137,11 @@ int main() {
         }
         // this is to try and get rid of the huge oceans or blank space that appears 
         // it just loops through the array and if its low enough number give it a chance to be bigger
-        if(iterations > 28) {
+        if(iterations > iterationLoop) {
             for(int i = 0; i<row; i++) {
                 for(int j = 0; j<col; j++) {
                     if(noiseMap[i][j] == 0) {
-                        if(rand() % 1000 < 1) {
+                        if(rand() % 750 < 1) {
                             noiseMap[i][j] = (rand() % 5) + 1;
                             }
                         }
@@ -150,8 +165,14 @@ int main() {
                         // this allows more large mountains in 0 and shallow
                         // both with their own chances
                     if(noiseMap[i][j] == 0) {
-                        if(rand() % 5000 < 1) {
+                        if(rand() % 7000 < 1) {
                             noiseMap[i][j] = (rand() % 20) + 1;
+                            }
+                        }
+                        // added chance to spawn in water on higher elevations
+                    if(noiseMap[i][j] >= 15 && noiseMap[i][j] <= 20) {
+                        if(rand() % 3000 < 1) {
+                            noiseMap[i][j] = 0;
                             }
                         }
                     }
@@ -210,13 +231,13 @@ int main() {
             else if(noiseMap[i][j] >= spawnSize * 0.35 && noiseMap[i][j] < spawnSize * 0.5) {
                 fprintf(f2, "%d %d %d ", 208, 163, 105);// light brown
             }
-            else if(noiseMap[i][j] >= spawnSize * 0.5 && noiseMap[i][j] < spawnSize * 0.6) {
+            else if(noiseMap[i][j] >= spawnSize * 0.5 && noiseMap[i][j] < spawnSize * 0.65) {
                 fprintf(f2, "%d %d %d ", 55, 199, 74);// light green
             }
-            else if(noiseMap[i][j] >= spawnSize * 0.6 && noiseMap[i][j] < spawnSize * 0.75) {
+            else if(noiseMap[i][j] >= spawnSize * 0.65 && noiseMap[i][j] < spawnSize * 0.85) {
                 fprintf(f2, "%d %d %d ", 18, 148, 35);// dark green
             }
-            else if(noiseMap[i][j] >= spawnSize * 0.75 && noiseMap[i][j] < spawnSize * 0.95) {
+            else if(noiseMap[i][j] >= spawnSize * 0.85 && noiseMap[i][j] < spawnSize * 0.99) {
                 fprintf(f2, "%d %d %d ", 79, 80, 85);// gray
             }
             else {
