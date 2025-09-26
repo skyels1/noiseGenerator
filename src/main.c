@@ -200,19 +200,64 @@ int main() {
         iterations--;
     }
 
-    // smoothing
-    for(int i = 1; i < row - 1; i++) {
-        for(int j = 1; j < col -1; j++) {
-            int sum = 
-            noiseMap[i][j] + 
+    // smoothing just a box
+    // for(int i = 1; i < row - 1; i++) {
+    //     for(int j = 1; j < col -1; j++) {
+    //         noiseMap[i][j] = 
+    //         (noiseMap[i][j] + 
+    //         noiseMap[i + 1][j + 1] + noiseMap[i - 1][j - 1] +
+    //         noiseMap[i - 1][j + 1] + noiseMap[i + 1][j - 1] + 
+    //         noiseMap[i + 1][j] + noiseMap[i - 1][j] + 
+    //         noiseMap[i][j + 1] + noiseMap[i][j - 1]) / 9;
+    //     }
+    // }
+
+    // smoothing with longer arm length
+    // for(int i = 1; i < row - 1; i++) {
+    //     for(int j = 1; j < col -1; j++) {
+            
+    //         noiseMap[i][j] = 
+    //         (noiseMap[i][j] + 
+    //         noiseMap[i + 1][j + 1] + noiseMap[i - 1][j - 1] +
+    //         noiseMap[i - 1][j + 1] + noiseMap[i + 1][j - 1] + 
+    //         noiseMap[i + 1][j] + noiseMap[i - 1][j] + 
+    //         noiseMap[i][j + 1] + noiseMap[i][j - 1] + 
+    //         noiseMap[i + 2][j] + noiseMap[i - 2][j] + 
+    //         noiseMap[i][j + 2] + noiseMap[i][j - 2]) / 13;
+    //     }
+    // }
+
+    // smoothing just edges
+    // for(int i = 1; i < row - 1; i++) {
+    //     for(int j = 1; j < col -1; j++) {
+    //         noiseMap[i][j] = 
+    //         (noiseMap[i][j] +
+    //         noiseMap[i + 1][j] + noiseMap[i - 1][j] + 
+    //         noiseMap[i][j + 1] + noiseMap[i][j - 1]) / 5;
+    //     }
+    // }
+
+    // smoothing just corners
+    // for(int i = 1; i < row - 1; i++) {
+    //     for(int j = 1; j < col -1; j++) {
+    //         (noiseMap[i][j] + 
+    //         noiseMap[i + 1][j + 1] + noiseMap[i - 1][j - 1] +
+    //         noiseMap[i - 1][j + 1] + noiseMap[i + 1][j - 1]) / 5;
+    //     }
+    // }
+
+    // smoothing star
+    for(int i = 2; i < row - 2; i++) {
+        for(int j = 2; j < col -2; j++) {
+            noiseMap[i][j] = 
+            (noiseMap[i][j] + 
             noiseMap[i + 1][j + 1] + noiseMap[i - 1][j - 1] +
             noiseMap[i - 1][j + 1] + noiseMap[i + 1][j - 1] + 
-            noiseMap[i + 1][j] + noiseMap[i - 1][j] + 
-            noiseMap[i][j + 1] + noiseMap[i][j - 1];
-            
-            noiseMap[i][j] = sum / 9;
+            noiseMap[i + 2][j] + noiseMap[i - 2][j] + 
+            noiseMap[i][j + 2] + noiseMap[i][j - 2]) / 9;
         }
     }
+
     
 
     // write to file
@@ -249,56 +294,56 @@ int main() {
     for(int i = 0; i<row; i++) {
         for(int j = 0; j<col; j++) {
 
-            // if(noiseMap[i][j] < spawnSize * 0.05) {
-            //     fprintf(f2, "%d %d %d ", 5, 5, 25);// darker blue
-            // }
-            // else if(noiseMap[i][j] < spawnSize * 0.15) {
-            //     fprintf(f2, "%d %d %d ", 10, 21, 80);// dark blue
-            // }
-            // else if(noiseMap[i][j] >= spawnSize * 0.15 && noiseMap[i][j] < spawnSize * 0.25) {
-            //     fprintf(f2, "%d %d %d ", 12, 34, 148);// light blue
-            // }
-            // else if(noiseMap[i][j] >= spawnSize * 0.25 && noiseMap[i][j] < spawnSize * 0.35) {
-            //     fprintf(f2, "%d %d %d ", 90, 240, 250);// lighter blue
-            // }
-            // else if(noiseMap[i][j] >= spawnSize * 0.35 && noiseMap[i][j] < spawnSize * 0.5) {
-            //     fprintf(f2, "%d %d %d ", 208, 163, 105);// light brown
-            // }
-            // else if(noiseMap[i][j] >= spawnSize * 0.5 && noiseMap[i][j] < spawnSize * 0.65) {
-            //     fprintf(f2, "%d %d %d ", 55, 199, 74);// light green
-            // }
-            // else if(noiseMap[i][j] >= spawnSize * 0.65 && noiseMap[i][j] < spawnSize * 0.85) {
-            //     fprintf(f2, "%d %d %d ", 18, 148, 35);// dark green
-            // }
-            // else if(noiseMap[i][j] >= spawnSize * 0.85 && noiseMap[i][j] < spawnSize * 0.99) {
-            //     fprintf(f2, "%d %d %d ", 79, 80, 85);// gray
-            // }
-            // else {
-            //     fprintf(f2, "%d %d %d ", 219, 219, 219);// white ish
-            // }
-
-
-            if (noiseMap[i][j] < spawnSize * (1.0/7.0)) {
-                fprintf(f2, "%d %d %d ", 116, 247, 37); // bright green
+            if(noiseMap[i][j] < spawnSize * 0.05) {
+                fprintf(f2, "%d %d %d ", 5, 5, 25);// darker blue
             }
-            else if (noiseMap[i][j] < spawnSize * (2.0/7.0)) {
-                fprintf(f2, "%d %d %d ", 0, 174, 212); // cyan
+            else if(noiseMap[i][j] < spawnSize * 0.15) {
+                fprintf(f2, "%d %d %d ", 10, 21, 80);// dark blue
             }
-            else if (noiseMap[i][j] < spawnSize * (3.0/7.0)) {
-                fprintf(f2, "%d %d %d ", 49, 65, 253); // blue
+            else if(noiseMap[i][j] >= spawnSize * 0.15 && noiseMap[i][j] < spawnSize * 0.25) {
+                fprintf(f2, "%d %d %d ", 12, 34, 148);// light blue
             }
-            else if (noiseMap[i][j] < spawnSize * (4.0/7.0)) {
-                fprintf(f2, "%d %d %d ", 171, 0, 186); // purple
+            else if(noiseMap[i][j] >= spawnSize * 0.25 && noiseMap[i][j] < spawnSize * 0.35) {
+                fprintf(f2, "%d %d %d ", 90, 240, 250);// lighter blue
             }
-            else if (noiseMap[i][j] < spawnSize * (5.0/7.0)) {
-                fprintf(f2, "%d %d %d ", 251, 52, 62); // red
+            else if(noiseMap[i][j] >= spawnSize * 0.35 && noiseMap[i][j] < spawnSize * 0.5) {
+                fprintf(f2, "%d %d %d ", 208, 163, 105);// light brown
             }
-            else if (noiseMap[i][j] < spawnSize * (6.0/7.0)) {
-                fprintf(f2, "%d %d %d ", 233, 146, 4); // orange
+            else if(noiseMap[i][j] >= spawnSize * 0.5 && noiseMap[i][j] < spawnSize * 0.65) {
+                fprintf(f2, "%d %d %d ", 55, 199, 74);// light green
+            }
+            else if(noiseMap[i][j] >= spawnSize * 0.65 && noiseMap[i][j] < spawnSize * 0.85) {
+                fprintf(f2, "%d %d %d ", 18, 148, 35);// dark green
+            }
+            else if(noiseMap[i][j] >= spawnSize * 0.85 && noiseMap[i][j] < spawnSize * 0.99) {
+                fprintf(f2, "%d %d %d ", 79, 80, 85);// gray
             }
             else {
-                fprintf(f2, "%d %d %d ", 127, 243, 31); // lime green
+                fprintf(f2, "%d %d %d ", 219, 219, 219);// white ish
             }
+
+
+            // if (noiseMap[i][j] < spawnSize * (1.0/7.0)) {
+            //     fprintf(f2, "%d %d %d ", 116, 247, 37); // bright green
+            // }
+            // else if (noiseMap[i][j] < spawnSize * (2.0/7.0)) {
+            //     fprintf(f2, "%d %d %d ", 0, 174, 212); // cyan
+            // }
+            // else if (noiseMap[i][j] < spawnSize * (3.0/7.0)) {
+            //     fprintf(f2, "%d %d %d ", 49, 65, 253); // blue
+            // }
+            // else if (noiseMap[i][j] < spawnSize * (4.0/7.0)) {
+            //     fprintf(f2, "%d %d %d ", 171, 0, 186); // purple
+            // }
+            // else if (noiseMap[i][j] < spawnSize * (5.0/7.0)) {
+            //     fprintf(f2, "%d %d %d ", 251, 52, 62); // red
+            // }
+            // else if (noiseMap[i][j] < spawnSize * (6.0/7.0)) {
+            //     fprintf(f2, "%d %d %d ", 233, 146, 4); // orange
+            // }
+            // else {
+            //     fprintf(f2, "%d %d %d ", 127, 243, 31); // lime green
+            // }
 
         }
         fprintf(f2, "\n");
