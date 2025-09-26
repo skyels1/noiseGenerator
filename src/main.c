@@ -15,8 +15,8 @@
 // iterations set to 30 and 27 */
 
 // /*with higher quality
-#define row 1080
-#define col 1920
+#define row 1000
+#define col 1000
 #define dir 8
 #define spawnSize 20
 #define spawnChance RAND_MAX
@@ -198,6 +198,20 @@ int main() {
                  }
             }
         iterations--;
+    }
+
+    // smoothing
+    for(int i = 1; i < row - 1; i++) {
+        for(int j = 1; j < col -1; j++) {
+            int sum = 
+            noiseMap[i][j] + 
+            noiseMap[i + 1][j + 1] + noiseMap[i - 1][j - 1] +
+            noiseMap[i - 1][j + 1] + noiseMap[i + 1][j - 1] + 
+            noiseMap[i + 1][j] + noiseMap[i - 1][j] + 
+            noiseMap[i][j + 1] + noiseMap[i][j - 1];
+            
+            noiseMap[i][j] = sum / 9;
+        }
     }
     
 
