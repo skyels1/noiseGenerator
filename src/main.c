@@ -1,14 +1,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdint.h>
 
+ /*favorite seed
 #define row 400
 #define col 400
 #define dir 8
+#define spawnSize 20
+#define spawnChance 20000
+#define spreadChance 20
+#define spreadChanceGrow 1000
+#define elevationSpread 20
+// iterations set to 30 and 27 */
+
+// /*with higher quality
+#define row 1000
+#define col 1000
+#define dir 8
+#define spawnSize 20
+#define spawnChance RAND_MAX
+#define spreadChance 30
+#define spreadSetBack 1
+#define spreadChanceGrow 2500
+#define elevationSpread 20
+// iterations set to 30 and 27 */
 
 
 int main() {
-    // use 2d array and malloc to get grid size as needed
+
     int **noiseMap = (int **)malloc(row * sizeof(int *));
     for(int i = 0; i < row; i++) {
         noiseMap[i] = (int *)malloc(col * sizeof(int));
@@ -16,15 +36,15 @@ int main() {
 
     srand(time(NULL));
 
-    int spawnSize = 20;
-    int greyScale = 255/spawnSize;
     int iterations = 30;
+    int iterationLoop = 27;
+    int greyScale = 255/spawnSize;
 
     // populate the array with starters, and later loop to grow them
     for(int i = 0; i<row; i++) {
         for(int j = 0; j<col; j++) {
 
-            if(rand() % 5000 < 1) {
+            if(rand() % spawnChance < 1) {
                 noiseMap[i][j] = (rand() % spawnSize) + 1;
             }
             else {
@@ -32,7 +52,6 @@ int main() {
             }
         }
     }
-
     // box style all sides and corners
     int directions[dir][2] = {
         {-1,-1},{-1,0},{-1,1},
@@ -46,7 +65,6 @@ int main() {
         {0,-1},{0,1},
         {1,0}
     };*/
-
     
 // this is the main update for the map generation, it will loop through the array
 // this is main because it goes top to bottom
@@ -55,35 +73,42 @@ int main() {
             for(int j = 0; j<col; j++) {
                 if(noiseMap[i][j] > 0) {
                     for(int d = 0; d<dir; d++) {
-                        // map tiling, can have the map go from the sides and match the other side
-                        // kind of cool but i prefer normal for now
-                        //int Oi = (i + directions[d][0] + row) % row;// for tile
-                        //int Oj = (j + directions[d][1] + col) % col;
-                        int Oi = i + directions[d][0];// for non tile
-                        int Oj = j + directions[d][1];
-                        if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
-                            if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
-                                if(rand() %200 < 10){
-                                    noiseMap[Oi][Oj] = noiseMap[i][j];
-                                }
-                                else {
-                                noiseMap[Oi][Oj] = noiseMap[i][j] - 1;
-                                }   
-                            }
-                            // added to change if you want to make it 
-                            // so that the mountains are not as circular
-                            // will force them to be more smooth
-                            // both this and for reverse update
-                            if(noiseMap[i][j] > 10) {
+                        // change the likely hood of the seed spreading to get less "islands"
+                        if(rand() %spreadSetBack == 0) {
+                            // map tiling, can have the map go from the sides and match the other side
+                            // kind of cool but i prefer normal for now
+                            //int Oi = (i + directions[d][0] + row) % row;// for tile
+                            //int Oj = (j + directions[d][1] + col) % col;
+                            int Oi = i + directions[d][0];// for non tile
+                            int Oj = j + directions[d][1];
+                            if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
                                 if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
-                                    if(rand() %300 < 10){
+                                    if(rand() %spreadChance < 1){
                                         noiseMap[Oi][Oj] = noiseMap[i][j];
+                                    }
+                                    // to add a chance to grow the seed positive rather than negative without going over the cap
+                                    else if(rand() %spreadChanceGrow < 1 && noiseMap[i][j] <(spawnSize-1)){
+                                        noiseMap[Oi][Oj] = noiseMap[i][j] + 1;
                                     }
                                     else {
                                     noiseMap[Oi][Oj] = noiseMap[i][j] - 1;
-                                    }   
-                                }  
-                            }  
+                                    } 
+                                }
+                                // added to change if you want to make it 
+                                // so that the mountains are not as circular
+                                // will force them to be more smooth
+                                // both this and for reverse update
+                                if(noiseMap[i][j] > (spawnSize*0.5) && noiseMap[i][j] <= (spawnSize*0.85)) {
+                                    if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
+                                        if(rand() %elevationSpread < 1){
+                                            noiseMap[Oi][Oj] = noiseMap[i][j];
+                                        }
+                                        else {
+                                        noiseMap[Oi][Oj] = noiseMap[i][j] - 1;
+                                        }   
+                                    }  
+                                } 
+                            }
                         }
                     }
                 }
@@ -96,30 +121,38 @@ int main() {
             for(int j = col-1; j>=0; j--) {
                 if(noiseMap[i][j] > 0) {
                     for(int d = 0; d<dir; d++) {
-                        // this is for tiling of the map both this and main
-                        //int Oi = (i + directions[d][0] + row) % row;// for tile
-                        //int Oj = (j + directions[d][1] + col) % col;
-                        int Oi = i + directions[d][0];// for non tile
-                        int Oj = j + directions[d][1];
-                        if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
-                            if(noiseMap[Oi][Oj] == 0) {
-                                if(rand() %200 < 10){
-                                    noiseMap[Oi][Oj] = noiseMap[i][j];
-                                }
-                                else {
-                                noiseMap[Oi][Oj] = noiseMap[i][j] - 1;
-                                }   
-                            }
-                            if(noiseMap[i][j] > 10) {
+                        // less islands spawn from this check to lower the amount of spreading
+                        if(rand() %spreadSetBack < 1) {
+                            // this is for tiling of the map both this and main
+                            //int Oi = (i + directions[d][0] + row) % row;// for tile
+                            //int Oj = (j + directions[d][1] + col) % col;
+                            int Oi = i + directions[d][0];// for non tile
+                            int Oj = j + directions[d][1];
+                            if(Oi >= 0 && Oi < row && Oj >= 0 && Oj <col) {
                                 if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
-                                    if(rand() %300 < 10){
+                                    if(rand() %spreadChance < 1){
                                         noiseMap[Oi][Oj] = noiseMap[i][j];
+                                    }
+                                    // to add a chance to grow the seed positive rather than negative
+                                    else if(rand() %spreadChanceGrow < 1 && noiseMap[i][j] <(spawnSize-1)){
+                                        noiseMap[Oi][Oj] = noiseMap[i][j] + 1;
                                     }
                                     else {
                                     noiseMap[Oi][Oj] = noiseMap[i][j] - 1;
-                                    }   
-                                }  
-                            }    
+                                    }
+                                }
+                                // check if its higher and give it more chance to spread
+                                if(noiseMap[i][j] > (spawnSize*0.5) && noiseMap[i][j] <= (spawnSize*0.85)) {
+                                    if(noiseMap[Oi][Oj] < noiseMap[i][j]) {
+                                        if(rand() %elevationSpread < 1){
+                                            noiseMap[Oi][Oj] = noiseMap[i][j];
+                                        }
+                                        else {
+                                        noiseMap[Oi][Oj] = noiseMap[i][j] - 1;
+                                        }   
+                                    }  
+                                }   
+                            }
                         }
                     }
                 }
@@ -127,11 +160,11 @@ int main() {
         }
         // this is to try and get rid of the huge oceans or blank space that appears 
         // it just loops through the array and if its low enough number give it a chance to be bigger
-        if(iterations > 28) {
+        if(iterations > iterationLoop) {
             for(int i = 0; i<row; i++) {
                 for(int j = 0; j<col; j++) {
                     if(noiseMap[i][j] == 0) {
-                        if(rand() % 1000 < 1) {
+                        if(rand() % 750 < 1) {
                             noiseMap[i][j] = (rand() % 5) + 1;
                             }
                         }
@@ -155,8 +188,14 @@ int main() {
                         // this allows more large mountains in 0 and shallow
                         // both with their own chances
                     if(noiseMap[i][j] == 0) {
-                        if(rand() % 5000 < 1) {
+                        if(rand() % 7000 < 1) {
                             noiseMap[i][j] = (rand() % 20) + 1;
+                            }
+                        }
+                        // added chance to spawn in water on higher elevations
+                    if(noiseMap[i][j] >= 15 && noiseMap[i][j] <= 20) {
+                        if(rand() % 3000 < 1) {
+                            noiseMap[i][j] = 0;
                             }
                         }
                     }
@@ -164,6 +203,65 @@ int main() {
             }
         iterations--;
     }
+
+    // smoothing just a box
+    // for(int i = 1; i < row - 1; i++) {
+    //     for(int j = 1; j < col -1; j++) {
+    //         noiseMap[i][j] = 
+    //         (noiseMap[i][j] + 
+    //         noiseMap[i + 1][j + 1] + noiseMap[i - 1][j - 1] +
+    //         noiseMap[i - 1][j + 1] + noiseMap[i + 1][j - 1] + 
+    //         noiseMap[i + 1][j] + noiseMap[i - 1][j] + 
+    //         noiseMap[i][j + 1] + noiseMap[i][j - 1]) / 9;
+    //     }
+    // }
+
+    // smoothing with longer arm length
+    // for(int i = 1; i < row - 1; i++) {
+    //     for(int j = 1; j < col -1; j++) {
+            
+    //         noiseMap[i][j] = 
+    //         (noiseMap[i][j] + 
+    //         noiseMap[i + 1][j + 1] + noiseMap[i - 1][j - 1] +
+    //         noiseMap[i - 1][j + 1] + noiseMap[i + 1][j - 1] + 
+    //         noiseMap[i + 1][j] + noiseMap[i - 1][j] + 
+    //         noiseMap[i][j + 1] + noiseMap[i][j - 1] + 
+    //         noiseMap[i + 2][j] + noiseMap[i - 2][j] + 
+    //         noiseMap[i][j + 2] + noiseMap[i][j - 2]) / 13;
+    //     }
+    // }
+
+    // smoothing just edges
+    // for(int i = 1; i < row - 1; i++) {
+    //     for(int j = 1; j < col -1; j++) {
+    //         noiseMap[i][j] = 
+    //         (noiseMap[i][j] +
+    //         noiseMap[i + 1][j] + noiseMap[i - 1][j] + 
+    //         noiseMap[i][j + 1] + noiseMap[i][j - 1]) / 5;
+    //     }
+    // }
+
+    // smoothing just corners
+    // for(int i = 1; i < row - 1; i++) {
+    //     for(int j = 1; j < col -1; j++) {
+    //         (noiseMap[i][j] + 
+    //         noiseMap[i + 1][j + 1] + noiseMap[i - 1][j - 1] +
+    //         noiseMap[i - 1][j + 1] + noiseMap[i + 1][j - 1]) / 5;
+    //     }
+    // }
+
+    // smoothing star
+    for(int i = 2; i < row - 2; i++) {
+        for(int j = 2; j < col -2; j++) {
+            noiseMap[i][j] = 
+            (noiseMap[i][j] + 
+            noiseMap[i + 1][j + 1] + noiseMap[i - 1][j - 1] +
+            noiseMap[i - 1][j + 1] + noiseMap[i + 1][j - 1] + 
+            noiseMap[i + 2][j] + noiseMap[i - 2][j] + 
+            noiseMap[i][j + 2] + noiseMap[i][j - 2]) / 9;
+        }
+    }
+
     
 
     // write to file
@@ -215,18 +313,42 @@ int main() {
             else if(noiseMap[i][j] >= spawnSize * 0.35 && noiseMap[i][j] < spawnSize * 0.5) {
                 fprintf(f2, "%d %d %d ", 208, 163, 105);// light brown
             }
-            else if(noiseMap[i][j] >= spawnSize * 0.5 && noiseMap[i][j] < spawnSize * 0.6) {
+            else if(noiseMap[i][j] >= spawnSize * 0.5 && noiseMap[i][j] < spawnSize * 0.65) {
                 fprintf(f2, "%d %d %d ", 55, 199, 74);// light green
             }
-            else if(noiseMap[i][j] >= spawnSize * 0.6 && noiseMap[i][j] < spawnSize * 0.75) {
+            else if(noiseMap[i][j] >= spawnSize * 0.65 && noiseMap[i][j] < spawnSize * 0.85) {
                 fprintf(f2, "%d %d %d ", 18, 148, 35);// dark green
             }
-            else if(noiseMap[i][j] >= spawnSize * 0.75 && noiseMap[i][j] < spawnSize * 0.95) {
+            else if(noiseMap[i][j] >= spawnSize * 0.85 && noiseMap[i][j] < spawnSize * 0.99) {
                 fprintf(f2, "%d %d %d ", 79, 80, 85);// gray
             }
             else {
                 fprintf(f2, "%d %d %d ", 219, 219, 219);// white ish
             }
+
+
+            // if (noiseMap[i][j] < spawnSize * (1.0/7.0)) {
+            //     fprintf(f2, "%d %d %d ", 116, 247, 37); // bright green
+            // }
+            // else if (noiseMap[i][j] < spawnSize * (2.0/7.0)) {
+            //     fprintf(f2, "%d %d %d ", 0, 174, 212); // cyan
+            // }
+            // else if (noiseMap[i][j] < spawnSize * (3.0/7.0)) {
+            //     fprintf(f2, "%d %d %d ", 49, 65, 253); // blue
+            // }
+            // else if (noiseMap[i][j] < spawnSize * (4.0/7.0)) {
+            //     fprintf(f2, "%d %d %d ", 171, 0, 186); // purple
+            // }
+            // else if (noiseMap[i][j] < spawnSize * (5.0/7.0)) {
+            //     fprintf(f2, "%d %d %d ", 251, 52, 62); // red
+            // }
+            // else if (noiseMap[i][j] < spawnSize * (6.0/7.0)) {
+            //     fprintf(f2, "%d %d %d ", 233, 146, 4); // orange
+            // }
+            // else {
+            //     fprintf(f2, "%d %d %d ", 127, 243, 31); // lime green
+            // }
+
         }
         fprintf(f2, "\n");
     }
@@ -250,6 +372,8 @@ int main() {
     //system("start noiseMap.ppm");
     //system("xdg-open noiseMapColor.ppm");
     system("start noiseMapColor.ppm");
+
+    free(noiseMap);
     
     return 0;
 }
