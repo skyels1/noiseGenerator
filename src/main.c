@@ -8,7 +8,12 @@
 
 
 int main() {
-    int noiseMap[row][col];
+    // use 2d array and malloc to get grid size as needed
+    int **noiseMap = (int **)malloc(row * sizeof(int *));
+    for(int i = 0; i < row; i++) {
+        noiseMap[i] = (int *)malloc(col * sizeof(int));
+    }
+
     srand(time(NULL));
 
     int spawnSize = 20;
@@ -228,6 +233,7 @@ int main() {
 
     fclose(f2);
     printf("file wrote to noiseMapColor.ppm\n");
+    free(noiseMap);
 
     /* print to console
     for(int i = 0; i<row; i++) {
@@ -240,10 +246,10 @@ int main() {
 
     // open the viewing application for both windows and linux after running
     // just nice so i dont have to keep opening the files every time i change something and want to see it
-    system("xdg-open noiseMap.ppm");
-    system("start noiseMap.ppm");
-    system("xdg-open noiseMapColor.ppm");
+    //system("xdg-open noiseMap.ppm");
+    //system("start noiseMap.ppm");
+    //system("xdg-open noiseMapColor.ppm");
     system("start noiseMapColor.ppm");
-
+    
     return 0;
 }
