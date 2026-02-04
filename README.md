@@ -15,8 +15,8 @@ grey scale noise\
 color map for terrain with beaches\
 ![(image) example of what the code looks like](/previews/NoiseMapColorSwapped.png)
 
-height map noise with sandy cliffs\
-![(image) example of what the code looks like](/previews/noiseMapWithColor4.png)
+color map for terrain with malloc (higher quality)\
+![(image) example of what the code looks like](/previews/NoiseMapColorWmalloc.png)
 
 both noise and terrain gif\
 ![(image) example of what the code looks like](/previews/noise.gif)

@@ -29,6 +29,7 @@
 
 int main() {
 
+    // using malloc to dynamically allocate for the grid
     int **noiseMap = (int **)malloc(row * sizeof(int *));
     for(int i = 0; i < row; i++) {
         noiseMap[i] = (int *)malloc(col * sizeof(int));
