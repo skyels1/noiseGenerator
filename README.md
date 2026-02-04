@@ -16,7 +16,7 @@ color map for terrain with beaches\
 ![(image) example of what the code looks like](/previews/NoiseMapColorSwapped.png)
 
 color map for terrain with malloc (higher quality)\
-![(image) example of what the code looks like](/previews/NoiseMapColorWmalloc.png)
+![(image) example of what the code looks like](/previews/noiseMapColorWmalloc.png)
 
 both noise and terrain gif\
 ![(image) example of what the code looks like](/previews/noise.gif)
